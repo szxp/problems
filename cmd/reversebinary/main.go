@@ -27,7 +27,7 @@ package main
 import (
     "fmt"
     "log"
-    "math"
+    //"math"
 )
 
 func main() {
@@ -41,7 +41,7 @@ func main() {
     s := fmt.Sprintf("%b", n)
     for i:=len(s)-1; i>=0; i-- {
         if s[i] == 49 { // digit one
-            r += int32(math.Pow(float64(2), float64(i)))
+            r += int32(1) << i
         }
     }
     fmt.Print(r)
