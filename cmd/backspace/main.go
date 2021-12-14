@@ -76,11 +76,19 @@ func main() {
         }
     }
 
-    b1 := make([]byte, 1)
-    for _, c := range s {
-        if c != '\u0000' {
-            b1[0] = c
-            w.Write(b1)
+    var from int
+    normal := len(s) > 0 && s[0] != '\u0000'
+    for i, c := range s {
+        if normal && c == '\u0000' {
+            w.Write(s[from:i])
+            normal = false
+        } else if !normal && c != '\u0000' {
+            from = i
+            normal = true
+        }
+
+        if normal && i == len(s)-1 {
+            w.Write(s[from:i+1])
         }
     }
 
