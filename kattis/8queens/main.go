@@ -48,7 +48,7 @@ import (
 )
 
 func main() {
-	w := os.Stdout
+	w := bufio.NewWriter(os.Stdout)
 	scanner := bufio.NewScanner(os.Stdin)
 
 	valid := true
@@ -67,51 +67,49 @@ func main() {
 		}
 	}
 
-	//log.Println(queens)
-
-	if len(queens) < 8 {
-		w.Write([]byte("invalid"))
-		return
-	}
-
-	var rdiff, cdiff int
-	var p1, p2 *pos
-LOOP:
-	for i1 := 0; i1 < 7; i1++ {
-		p1 = queens[i1]
-		for i2 := i1 + 1; i2 < 8; i2++ {
-			p2 = queens[i2]
-			if p1.row == p2.row {
-				valid = false
-				break LOOP
-			}
-			if p1.col == p2.col {
-				valid = false
-				break LOOP
-			}
-
-			rdiff = int(math.Abs(
-				float64(p1.row - p2.row),
-			))
-			cdiff = int(math.Abs(
-				float64(p1.col - p2.col),
-			))
-			if rdiff == cdiff {
-				valid = false
-				break LOOP
-			}
-		}
-	}
-
 	if err := scanner.Err(); err != nil {
 		log.Fatalln(err)
 	}
 
+    valid = len(queens) == 8
+
+	var rdiff, cdiff int
+	var p1, p2 *pos
 	if valid {
-		w.Write([]byte("valid"))
-	} else {
-		w.Write([]byte("invalid"))
+	LOOP:
+		for i1 := 0; i1 < 7; i1++ {
+			p1 = queens[i1]
+			for i2 := i1 + 1; i2 < 8; i2++ {
+				p2 = queens[i2]
+				if p1.row == p2.row {
+					valid = false
+					break LOOP
+				}
+				if p1.col == p2.col {
+					valid = false
+					break LOOP
+				}
+
+				rdiff = int(math.Abs(
+					float64(p1.row - p2.row),
+				))
+				cdiff = int(math.Abs(
+					float64(p1.col - p2.col),
+				))
+				if rdiff == cdiff {
+					valid = false
+					break LOOP
+				}
+			}
+		}
 	}
+
+	if valid {
+		w.WriteString("valid")
+	} else {
+		w.WriteString("invalid")
+	}
+	w.Flush()
 }
 
 type pos struct {
