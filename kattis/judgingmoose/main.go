@@ -45,22 +45,13 @@ func main() {
 	}
 
 	if l == 0 && r == 0 {
-		moose("", l)
+		fmt.Print("Not a moose")
 	} else if l > r {
-		moose("Odd", 2*l)
+		fmt.Printf("Odd %d", 2*l)
 	} else if l < r {
-		moose("Odd", 2*r)
+		fmt.Printf("Odd %d", 2*r)
 	} else {
-		moose("Even", 2*l)
+		fmt.Printf("Even %d", 2*l)
 	}
 }
 
-func moose(prefix string, p int) {
-	if p == 0 {
-		fmt.Print("Not a moose")
-	} else if prefix == "Even" {
-		fmt.Printf("Even %d", p)
-	} else {
-		fmt.Printf("Odd %d", p)
-	}
-}
