@@ -107,15 +107,15 @@ func (w *Words) Def(cmd string) error {
 	}
 
 	w.vars[name] = valNew
-    w.values[valNew] = name
+	w.values[valNew] = name
 	return nil
 }
 
 func (w *Words) Calc(cmd string) (string, error) {
-    //fmt.Println("Cmd", cmd)
+	//fmt.Println("Cmd", cmd)
 	args := strings.Split(cmd, " ")
 
-    var val, res int
+	var val, res int
 	var defined, plus bool
 	for i, a := range args {
 		if a == "+" {
@@ -127,7 +127,7 @@ func (w *Words) Calc(cmd string) (string, error) {
 			if name == "" {
 				return "unknown", nil
 			}
-            return name, nil
+			return name, nil
 		} else {
 			val, defined = w.vars[a]
 			//fmt.Println(i, a, val, defined)
@@ -135,11 +135,11 @@ func (w *Words) Calc(cmd string) (string, error) {
 				return "unknown", nil
 			}
 
-            if i == 0 || plus {
-                res += val
-            } else {
-                res -= val
-            }
+			if i == 0 || plus {
+				res += val
+			} else {
+				res -= val
+			}
 		}
 	}
 	return "unknown", nil

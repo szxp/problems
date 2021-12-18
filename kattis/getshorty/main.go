@@ -95,9 +95,9 @@ func main() {
 			}
 		}
 
-//        for m, dirs := range dungeon {
-//           log.Println(m, dirs)
-//        }
+		//        for m, dirs := range dungeon {
+		//           log.Println(m, dirs)
+		//        }
 
 		max := make([]float64, n)
 		step(
@@ -117,15 +117,15 @@ func main() {
 }
 
 type dir struct {
-	to        int
-	factor    float64
+	to     int
+	factor float64
 }
 
 func (d *dir) String() string {
-    return fmt.Sprint(
-        "to:", d.to,
-        "factor:", d.factor,
-    )
+	return fmt.Sprint(
+		"to:", d.to,
+		"factor:", d.factor,
+	)
 }
 
 func step(
@@ -135,18 +135,18 @@ func step(
 	max []float64,
 	exit int,
 ) {
-    if max[k] < mikael {
-        max[k] = mikael
-    }
+	if max[k] < mikael {
+		max[k] = mikael
+	}
 
-    //log.Printf("%+v\n", max)
+	//log.Printf("%+v\n", max)
 
-    if mikael < max[len(max)-1] {
+	if mikael < max[len(max)-1] {
 		//log.Println("abort 1")
-        return
-    }
+		return
+	}
 
-    if mikael < max[k] {
+	if mikael < max[k] {
 		//log.Println("abort 2")
 		return
 	}
@@ -160,7 +160,7 @@ func step(
 		step(
 			dungeon,
 			dir.to,
-            mikael * dir.factor,
+			mikael*dir.factor,
 			max,
 			exit,
 		)

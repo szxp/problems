@@ -34,7 +34,7 @@ import (
 	"log"
 	"os"
 	"strconv"
-    "strings"
+	"strings"
 )
 
 func main() {
@@ -43,27 +43,27 @@ func main() {
 	// skip the first number
 	scanner.Scan()
 
-    var sum float64
+	var sum float64
 	for scanner.Scan() {
 		s := scanner.Text()
-        ind := strings.IndexByte(s, ' ')
+		ind := strings.IndexByte(s, ' ')
 
-        q, err := strconv.ParseFloat(s[:ind], 64)
-        if err != nil {
-            log.Fatalln(err)
-        }
+		q, err := strconv.ParseFloat(s[:ind], 64)
+		if err != nil {
+			log.Fatalln(err)
+		}
 
-        y, err := strconv.ParseFloat(s[ind+1:], 64)
-        if err != nil {
-            log.Fatalln(err)
-        }
+		y, err := strconv.ParseFloat(s[ind+1:], 64)
+		if err != nil {
+			log.Fatalln(err)
+		}
 
-        sum += q * y
+		sum += q * y
 	}
 
-    if err := scanner.Err(); err != nil {
-        log.Fatalln(err)
-    }
+	if err := scanner.Err(); err != nil {
+		log.Fatalln(err)
+	}
 
-    fmt.Println(sum)
+	fmt.Println(sum)
 }

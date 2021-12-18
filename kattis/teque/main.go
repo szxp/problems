@@ -65,7 +65,7 @@ func main() {
 	var s, op, arg string
 	var i, ind int
 	var err error
-    var e *element
+	var e *element
 	for scanner.Scan() {
 		s = scanner.Text()
 		ind = strings.IndexByte(s, ' ')
@@ -84,12 +84,12 @@ func main() {
 			if err != nil {
 				log.Fatalln(err)
 			}
-            e = q.get(i)
-            //fmt.Println("i", i, e)
-            if e != nil {
-			    w.Write([]byte(e.s))
-			    w.Write([]byte("\n"))
-            }
+			e = q.get(i)
+			//fmt.Println("i", i, e)
+			if e != nil {
+				w.Write([]byte(e.s))
+				w.Write([]byte("\n"))
+			}
 		}
 	}
 
@@ -109,113 +109,113 @@ type teque struct {
 }
 
 func (t *teque) pushFront(s string) {
-    e := t.push(s, t.front, nil)
+	e := t.push(s, t.front, nil)
 	t.front = e
-    if t.size == 1 {
-        t.back = e
-        t.middle = e
-    } else if t.size%2 == 1 {
-        t.middle = t.middle.prev
-    }
-    //t.dump()
+	if t.size == 1 {
+		t.back = e
+		t.middle = e
+	} else if t.size%2 == 1 {
+		t.middle = t.middle.prev
+	}
+	//t.dump()
 }
 
 func (t *teque) pushBack(s string) {
-    e := t.push(s, nil, t.back)
+	e := t.push(s, nil, t.back)
 	t.back = e
-    if t.size == 1 {
-        t.front = e
-        t.middle = e
-    } else if t.size%2 == 0 {
-        t.middle = t.middle.next
-    }
-    //t.dump()
+	if t.size == 1 {
+		t.front = e
+		t.middle = e
+	} else if t.size%2 == 0 {
+		t.middle = t.middle.next
+	}
+	//t.dump()
 }
 
 func (t *teque) pushMiddle(s string) {
-    var e *element
-    if t.middle != nil {
-        if t.size%2 == 1 {
-            e = t.push(s, t.middle.next, t.middle)
-        } else {
-            e = t.push(s, t.middle, t.middle.prev)
-        }
-    } else {
-        e = t.push(s, nil, nil)
-    }
+	var e *element
+	if t.middle != nil {
+		if t.size%2 == 1 {
+			e = t.push(s, t.middle.next, t.middle)
+		} else {
+			e = t.push(s, t.middle, t.middle.prev)
+		}
+	} else {
+		e = t.push(s, nil, nil)
+	}
 
-    t.middle = e
-    if t.size == 2 {
-        t.back = e
-    } else if t.size == 1 {
-        t.front = e
-        t.back = e
-    }
-    //t.dump()
+	t.middle = e
+	if t.size == 2 {
+		t.back = e
+	} else if t.size == 1 {
+		t.front = e
+		t.back = e
+	}
+	//t.dump()
 }
 
 func (t *teque) push(
-    s string,
-    next *element,
-    prev *element,
+	s string,
+	next *element,
+	prev *element,
 ) *element {
 	e := &element{
 		s:    s,
-        next: next,
-        prev: prev,
+		next: next,
+		prev: prev,
 	}
-    if prev != nil {
-        prev.next = e
-    }
-    if next != nil {
-        next.prev = e
-    }
-    t.size += 1
-    return e
+	if prev != nil {
+		prev.next = e
+	}
+	if next != nil {
+		next.prev = e
+	}
+	t.size += 1
+	return e
 }
 
 func (t *teque) get(i int) *element {
-    fi := 0
-    mi := t.size / 2
+	fi := 0
+	mi := t.size / 2
 	bi := t.size - 1
 
-    if i <= mi {
-        hi := (mi - fi) / 2
-        if i <= hi {
-            return t.find(i, t.front, fi, true)
-        } else {
-            return t.find(i, t.middle, mi, false)
-        }
-    } else {
-        hi := mi + ((bi - mi) / 2)
-        if i <= hi {
-            return t.find(i, t.middle, mi, true)
-        } else {
-            return t.find(i, t.back, bi, false)
-        }
-    }
+	if i <= mi {
+		hi := (mi - fi) / 2
+		if i <= hi {
+			return t.find(i, t.front, fi, true)
+		} else {
+			return t.find(i, t.middle, mi, false)
+		}
+	} else {
+		hi := mi + ((bi - mi) / 2)
+		if i <= hi {
+			return t.find(i, t.middle, mi, true)
+		} else {
+			return t.find(i, t.back, bi, false)
+		}
+	}
 }
 
 func (t *teque) find(
-    i int,
-    from *element,
-    fromi int,
-    forward bool,
+	i int,
+	from *element,
+	fromi int,
+	forward bool,
 ) *element {
-    e := from
+	e := from
 	for e != nil {
-        if fromi == i {
-            return e
-        }
-        if forward {
-		    e = e.next
-            fromi++
-        } else {
-		    e = e.prev
-            fromi--
-        }
+		if fromi == i {
+			return e
+		}
+		if forward {
+			e = e.next
+			fromi++
+		} else {
+			e = e.prev
+			fromi--
+		}
 	}
-    return nil
+	return nil
 }
 
 func (t *teque) dump() {
@@ -224,12 +224,12 @@ func (t *teque) dump() {
 		fmt.Print(e.s, ",")
 		e = e.next
 	}
-    fmt.Println()
-    fmt.Println(
-        "F", t.front.s,
-        "M", t.middle.s,
-        "B", t.back.s,
-    )
+	fmt.Println()
+	fmt.Println(
+		"F", t.front.s,
+		"M", t.middle.s,
+		"B", t.back.s,
+	)
 }
 
 type element struct {

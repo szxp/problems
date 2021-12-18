@@ -127,18 +127,18 @@ func (q *queue) Add(sek, min int) {
 
 func (q *queue) Next(i int) int {
 	maxk := -1
-    var curr, max *amount
-    for k:=i; k<len(q.Wtimes); k++ {
-	    curr = q.Wtimes[k]
+	var curr, max *amount
+	for k := i; k < len(q.Wtimes); k++ {
+		curr = q.Wtimes[k]
 		if curr != nil && (max == nil || curr.SEK > max.SEK) {
 			max = curr
 			maxk = k
 		}
 	}
-    if maxk == -1 {
-        return 0
-    }
-    q.Wtimes[maxk] = max.Next
+	if maxk == -1 {
+		return 0
+	}
+	q.Wtimes[maxk] = max.Next
 	return max.SEK
 }
 

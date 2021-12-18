@@ -54,4 +54,3 @@ func main() {
 		fmt.Printf("Even %d", 2*l)
 	}
 }
-

@@ -71,7 +71,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-    valid = len(queens) == 8
+	valid = len(queens) == 8
 
 	var rdiff, cdiff int
 	var p1, p2 *pos
