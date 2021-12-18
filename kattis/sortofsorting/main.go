@@ -38,10 +38,10 @@ package main
 import (
 	"bufio"
 	//"fmt"
+	"io"
 	"log"
 	"os"
 	"strconv"
-    "io"
 )
 
 func main() {
@@ -49,7 +49,7 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	var s string
-    k := -1
+	k := -1
 	for scanner.Scan() {
 		s = scanner.Text()
 
@@ -58,20 +58,20 @@ func main() {
 			log.Fatalln(err)
 		}
 
-        if n == 0 {
-            break
-        }
-        k++
+		if n == 0 {
+			break
+		}
+		k++
 
 		list := &list{}
 		for i := 0; i < n; i++ {
-            scanner.Scan()
-		    s = scanner.Text()
-            list.Add(s)
+			scanner.Scan()
+			s = scanner.Text()
+			list.Add(s)
 		}
-        if k != 0 {
-		    w.Write([]byte("\n"))
-        }
+		if k != 0 {
+			w.Write([]byte("\n"))
+		}
 		list.Print(w)
 	}
 
@@ -88,20 +88,20 @@ type list struct {
 }
 
 func (l *list) Add(s string) {
-    var prev *entry
-    curr := l.front
-    for curr != nil && (s[0] > curr.s[0] || (s[0] == curr.s[0] && s[1] >= curr.s[1])) {
-        prev = curr
-        curr = curr.next
-    }
+	var prev *entry
+	curr := l.front
+	for curr != nil && (s[0] > curr.s[0] || (s[0] == curr.s[0] && s[1] >= curr.s[1])) {
+		prev = curr
+		curr = curr.next
+	}
 
-    e := &entry{s: s, next: curr}
+	e := &entry{s: s, next: curr}
 
-    if prev != nil {
-        prev.next = e
-    } else {
-        l.front = e
-    }
+	if prev != nil {
+		prev.next = e
+	} else {
+		l.front = e
+	}
 
 }
 
