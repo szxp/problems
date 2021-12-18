@@ -67,10 +67,10 @@ func main() {
 			if err != nil {
 				log.Fatalln(err)
 			}
-			w.Write([]byte(q))
-			w.Write([]byte(" "))
-			w.Write([]byte(res))
-			w.Write([]byte("\n"))
+			w.WriteString(q)
+			w.WriteByte(' ')
+			w.WriteString(res)
+			w.WriteByte('\n')
 		}
 	}
 
