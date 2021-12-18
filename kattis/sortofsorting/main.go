@@ -37,8 +37,6 @@ package main
 
 import (
 	"bufio"
-	//"fmt"
-	"io"
 	"log"
 	"os"
 	"strconv"
@@ -70,9 +68,14 @@ func main() {
 			list.Add(s)
 		}
 		if k != 0 {
-			w.Write([]byte("\n"))
+			w.WriteByte('\n')
 		}
-		list.Print(w)
+		curr := list.front
+		for curr != nil {
+			w.WriteString(curr.s)
+			w.WriteByte('\n')
+			curr = curr.next
+		}
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -83,7 +86,6 @@ func main() {
 }
 
 type list struct {
-	size  int
 	front *entry
 }
 
@@ -101,16 +103,6 @@ func (l *list) Add(s string) {
 		prev.next = e
 	} else {
 		l.front = e
-	}
-
-}
-
-func (l *list) Print(w io.Writer) {
-	curr := l.front
-	for curr != nil {
-		w.Write([]byte(curr.s))
-		w.Write([]byte("\n"))
-		curr = curr.next
 	}
 }
 
