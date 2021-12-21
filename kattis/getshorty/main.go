@@ -81,17 +81,22 @@ func main() {
 			}
 
 			if factor > 0 {
-				if x < y {
-					dungeon[x] = append(
-						dungeon[x],
-						&dir{to: y, factor: factor},
-					)
-				} else {
-					dungeon[y] = append(
-						dungeon[y],
-						&dir{to: x, factor: factor},
-					)
-				}
+				dungeon[x] = append(
+					dungeon[x],
+					&dir{
+						id:     i,
+						to:     y,
+						factor: factor,
+					},
+				)
+				dungeon[y] = append(
+					dungeon[y],
+					&dir{
+						id:     i,
+						to:     x,
+						factor: factor,
+					},
+				)
 			}
 		}
 
@@ -99,11 +104,15 @@ func main() {
 		//           log.Println(m, dirs)
 		//        }
 
+		p := make([]int, 0, n)
 		max := make([]float64, n)
 		step(
 			dungeon,
 			0,
 			1,
+			-1,
+			0,
+			p,
 			max,
 			n-1,
 		)
@@ -117,6 +126,7 @@ func main() {
 }
 
 type dir struct {
+	id     int
 	to     int
 	factor float64
 }
@@ -132,37 +142,53 @@ func step(
 	dungeon [][]*dir,
 	k int,
 	mikael float64,
+	dirFrom int,
+	depth int,
+	p []int,
 	max []float64,
 	exit int,
 ) {
+	p = append(p, k)
+
 	if max[k] < mikael {
 		max[k] = mikael
 	}
 
-	//log.Printf("%+v\n", max)
-
-	if mikael < max[len(max)-1] {
-		//log.Println("abort 1")
-		return
-	}
-
-	if mikael < max[k] {
-		//log.Println("abort 2")
-		return
-	}
-
 	if k == exit {
-		//log.Println("exit")
 		return
 	}
 
+	// worse than the best path to the exit
+	if mikael < max[len(max)-1] {
+		return
+	}
+
+	// too much size is lost
+	if mikael < max[k] {
+		return
+	}
+
+	pre := p[:depth]
+LOOP:
 	for _, dir := range dungeon[k] {
-		step(
-			dungeon,
-			dir.to,
-			mikael*dir.factor,
-			max,
-			exit,
-		)
+		// avoid circle
+		for _, n := range pre {
+			if n == dir.to {
+				continue LOOP
+			}
+		}
+
+		if dir.id != dirFrom {
+			step(
+				dungeon,
+				dir.to,
+				mikael*dir.factor,
+				dir.id,
+				depth+1,
+				p,
+				max,
+				exit,
+			)
+		}
 	}
 }
