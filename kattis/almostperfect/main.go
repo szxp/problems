@@ -51,7 +51,7 @@ func solve() error {
 			return err
 		}
 
-		if _, ok := perfectNums[p]; ok {
+		if isPerfect(p) {
 			fmt.Fprintf(w, "%s perfect\n", s)
 			continue
 		}
@@ -96,11 +96,11 @@ func sumProperDivisors(n int) int {
 	return sum + 1
 }
 
-var perfectNums = map[int]struct{}{
-	6:          struct{}{},
-	28:         struct{}{},
-	496:        struct{}{},
-	8128:       struct{}{},
-	33550336:   struct{}{},
-	8589869056: struct{}{},
+func isPerfect(n int) bool {
+	switch n {
+	case 6, 28, 496, 8128, 33550336:
+		return true
+	default:
+		return false
+	}
 }
