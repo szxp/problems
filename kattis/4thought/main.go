@@ -176,17 +176,21 @@ func (c *calculator) pushOp(op byte) {
 }
 
 func (c *calculator) popOp() {
-	switch c.ops[len(c.ops)-1] {
+	q2 := len(c.q) - 2
+	q1 := len(c.q) - 1
+	o1 := len(c.ops) - 1
+
+	switch c.ops[o1] {
 	case '+':
-		c.q[len(c.q)-2] = c.q[len(c.q)-2] + c.q[len(c.q)-1]
+		c.q[q2] = c.q[q2] + c.q[q1]
 	case '-':
-		c.q[len(c.q)-2] = c.q[len(c.q)-2] - c.q[len(c.q)-1]
+		c.q[q2] = c.q[q2] - c.q[q1]
 	case '*':
-		c.q[len(c.q)-2] = c.q[len(c.q)-2] * c.q[len(c.q)-1]
+		c.q[q2] = c.q[q2] * c.q[q1]
 	case '/':
-		c.q[len(c.q)-2] = c.q[len(c.q)-2] / c.q[len(c.q)-1]
+		c.q[q2] = c.q[q2] / c.q[q1]
 	}
 
-	c.q = c.q[:len(c.q)-1]
-	c.ops = c.ops[:len(c.ops)-1]
+	c.q = c.q[:q1]
+	c.ops = c.ops[:o1]
 }
