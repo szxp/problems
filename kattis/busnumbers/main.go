@@ -56,7 +56,7 @@ func solve() error {
 	var from, to, k int
 	for i := 0; i < len(buses); {
 		from, to, i = nextRange(buses, i)
-		if from > 0 && from < len(buses) {
+		if from > -1 {
 			k++
 			if k > 1 {
 				w.WriteByte(' ')
@@ -76,6 +76,9 @@ func solve() error {
 
 func nextRange(b []bool, i int) (from, to, ni int) {
 	for ; i < len(b) && !b[i]; i++ {
+	}
+	if i == len(b) {
+		return -1, -1, i
 	}
 	from = i
 	for ; i < len(b) && b[i]; i++ {
