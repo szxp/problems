@@ -100,7 +100,7 @@ func exists(tok, b []byte) bool {
 
 		s = i
 		found = true
-		for k := 0; found && k < len(tok) && s+k < len(b); k++ {
+		for k := 0; found && k < len(tok) && s+k < len(b) && b[s+k] != ' '; k++ {
 			if tok[k] != b[s+k] {
 				found = false
 			}
