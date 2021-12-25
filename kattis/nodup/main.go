@@ -64,11 +64,12 @@ func solve() error {
 	var tok []byte
 	for i := 0; i < len(b); {
 		from, i = nextToken(b, i)
-
-		tok = b[from:i]
-		if exists(tok, b[i:]) {
-			found = true
-			break
+		if from > -1 {
+			tok = b[from:i]
+			if exists(tok, b[i:]) {
+				found = true
+				break
+			}
 		}
 	}
 
@@ -83,6 +84,9 @@ func solve() error {
 
 func nextToken(b []byte, i int) (from, to int) {
 	for ; i < len(b) && b[i] == ' '; i++ {
+	}
+	if i == len(b) {
+		return -1, i
 	}
 	from = i
 	for ; i < len(b) && b[i] != ' '; i++ {
