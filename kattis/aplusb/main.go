@@ -41,7 +41,7 @@ func main() {
 func solve() error {
 	w := bufio.NewWriter(os.Stdout)
 	scanner := bufio.NewScanner(os.Stdin)
-	const maxCapacity = 512 * 1024
+	const maxCapacity = 2048 * 1024
 	buf := make([]byte, maxCapacity)
 	scanner.Buffer(buf, maxCapacity)
 
@@ -50,8 +50,8 @@ func solve() error {
 	n, _ := nextInt(b, 0)
 	//fmt.Fprintln(w, n)
 
-	nums := make([]num, n)
-	ord := make([]*num, n)
+	nums := make([]int, n)
+	indices := make([]int, 100001)
 	var a int
 	k := -1
 	scanner.Scan()
@@ -59,9 +59,8 @@ func solve() error {
 	for i := 0; i < len(b); {
 		a, i = nextInt(b, i)
 		k++
-		nums[k].val = a
-		nums[k].ind = k
-		ord[k] = &nums[k]
+		nums[k] = a
+		indices[a+50000] += 1
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -69,24 +68,52 @@ func solve() error {
 	}
 
 	sort.SliceStable(
-		ord,
+		nums,
 		func(i, j int) bool {
-			return ord[i].val < ord[j].val
+			return nums[i] < nums[j]
 		},
 	)
 
-	var count int
-	for u, v := range ord {
-		if v.val > 0 {
-			count += pairsLeft(ord, u)
-			count += pairsSides(ord, u)
-		} else if v.val < 0 {
-			count += pairsRight(ord, u)
-			count += pairsSides(ord, u)
-		} else {
-			count += pairsLeft(ord, u)
-			count += pairsRight(ord, u)
-			count += pairsSides(ord, u)
+	//fmt.Println(nums)
+
+	var x, y, sum, count int
+	var ii, jj, kk, c int
+	for a := 0; a < len(nums)-1; {
+		b := a + 1
+		//fmt.Println("a", a)
+		x, a = next(nums, a)
+		for b < len(nums) {
+			//fmt.Println("b", b)
+			y, b = next(nums, b)
+			sum = x + y
+			//fmt.Println(x, "+", y, "=", sum)
+
+			if -50000 <= sum && sum <= 50000 {
+				kk = indices[sum+50000]
+				if kk > 0 {
+					ii = indices[x+50000]
+					jj = indices[y+50000]
+
+					//fmt.Println("ii", ii, "jj", jj, "kk", kk)
+
+					if x == 0 && y == 0 {
+						jj -= 1
+						kk -= 2
+						c = ii * jj * kk
+					} else if x == 0 || y == 0 {
+						kk -= 1
+						c = ii * jj * 2 * kk
+					} else if x == y {
+						jj -= 1
+						c = ii * jj * kk
+					} else {
+						c = ii * jj * 2 * kk
+					}
+
+					//fmt.Println("c", c)
+					count += c
+				}
+			}
 		}
 	}
 
@@ -95,87 +122,14 @@ func solve() error {
 	return w.Flush()
 }
 
-func pairsLeft(ord []*num, u int) int {
-	var count, sum int
-	v := ord[u]
-	var va, vb *num
-
-	for a := u - 1; a > 0; a-- {
-		b := a - 1
-		for ; b >= 0; b-- {
-			va = ord[a]
-			vb = ord[b]
-			sum = va.val + vb.val
-
-			if sum < v.val {
-				break
-			}
-
-			if sum == v.val {
-				count += 2
-			}
-		}
-
-		if b == a-1 {
-			break
-		}
+func next(nums []int, i int) (v, ni int) {
+	if i == len(nums) {
+		return 0, i
 	}
-	return count
-}
-
-func pairsRight(ord []*num, u int) int {
-	var count, sum int
-	v := ord[u]
-	var va, vb *num
-
-	for a := u + 1; a < len(ord)-1; a++ {
-		b := a + 1
-		for ; b < len(ord); b++ {
-			va = ord[a]
-			vb = ord[b]
-			sum = va.val + vb.val
-
-			if sum > v.val {
-				break
-			}
-
-			if sum == v.val {
-				count += 2
-			}
-		}
-
-		if b == a+1 {
-			break
-		}
+	v = nums[i]
+	for ; i < len(nums) && nums[i] == v; i++ {
 	}
-	return count
-}
-
-func pairsSides(ord []*num, u int) int {
-	var count, sum int
-	v := ord[u]
-	var va, vb *num
-
-	if u == 0 || u == len(ord)-1 {
-		return 0
-	}
-
-	for a := u - 1; a >= 0; a-- {
-		for b := u + 1; b < len(ord); b++ {
-			va = ord[a]
-			vb = ord[b]
-			sum = va.val + vb.val
-
-			if sum > v.val {
-				break
-			}
-
-			if sum == v.val {
-				count += 2
-			}
-		}
-	}
-	return count
+	return v, i
 }
 
 func nextInt(b []byte, i int) (val, ni int) {
@@ -191,9 +145,4 @@ func nextInt(b []byte, i int) (val, ni int) {
 		}
 	}
 	return x * sign, i
-}
-
-type num struct {
-	val int
-	ind int
 }
