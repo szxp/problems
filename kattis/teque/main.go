@@ -43,14 +43,21 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"log"
 	"os"
 	"strconv"
-	"strings"
 )
 
 func main() {
+	err := solve()
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
+
+func solve() error {
 	const maxCapacity = 2 * 1024 * 1024
 	w := bufio.NewWriterSize(os.Stdout, maxCapacity)
 
@@ -60,180 +67,83 @@ func main() {
 
 	// skip the first number
 	scanner.Scan()
+	s := scanner.Text()
+	n, err := strconv.Atoi(s)
+	if err != nil {
+		return err
+	}
 
-	q := &teque{}
-	var s, op, arg string
-	var i, ind int
-	var err error
-	var e *element
+	q := newTeque(n)
+	var op string
+	var x, ind int
+	var b []byte
 	for scanner.Scan() {
-		s = scanner.Text()
-		ind = strings.IndexByte(s, ' ')
-		op = s[:ind]
-		arg = s[ind+1:]
+		b = scanner.Bytes()
+		ind = bytes.IndexByte(b, ' ')
+		op = string(b[:ind])
+		x, err = strconv.Atoi(string(b[ind+1:]))
+		if err != nil {
+			return err
+		}
 
 		switch op {
 		case "push_front":
-			q.pushFront(arg)
+			q.pushFront(x)
 		case "push_back":
-			q.pushBack(arg)
+			q.pushBack(x)
 		case "push_middle":
-			q.pushMiddle(arg)
+			q.pushMiddle(x)
 		case "get":
-			i, err = strconv.Atoi(arg)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			e = q.get(i)
-			//fmt.Println("i", i, e)
-			if e != nil {
-				w.Write([]byte(e.s))
-				w.Write([]byte("\n"))
-			}
+			fmt.Fprint(w, q.get(x))
+			w.WriteByte('\n')
 		}
 	}
 
 	if err = scanner.Err(); err != nil {
-		log.Fatalln(err)
+		return err
 	}
 
-	//q.dump()
-	w.Flush()
+	return w.Flush()
 }
 
 type teque struct {
-	size   int
-	front  *element
-	back   *element
-	middle *element
+	a     []int
+	first int
+	last  int
 }
 
-func (t *teque) pushFront(s string) {
-	e := t.push(s, t.front, nil)
-	t.front = e
-	if t.size == 1 {
-		t.back = e
-		t.middle = e
-	} else if t.size%2 == 1 {
-		t.middle = t.middle.prev
-	}
-	//t.dump()
-}
-
-func (t *teque) pushBack(s string) {
-	e := t.push(s, nil, t.back)
-	t.back = e
-	if t.size == 1 {
-		t.front = e
-		t.middle = e
-	} else if t.size%2 == 0 {
-		t.middle = t.middle.next
-	}
-	//t.dump()
-}
-
-func (t *teque) pushMiddle(s string) {
-	var e *element
-	if t.middle != nil {
-		if t.size%2 == 1 {
-			e = t.push(s, t.middle.next, t.middle)
-		} else {
-			e = t.push(s, t.middle, t.middle.prev)
-		}
-	} else {
-		e = t.push(s, nil, nil)
-	}
-
-	t.middle = e
-	if t.size == 2 {
-		t.back = e
-	} else if t.size == 1 {
-		t.front = e
-		t.back = e
-	}
-	//t.dump()
-}
-
-func (t *teque) push(
-	s string,
-	next *element,
-	prev *element,
-) *element {
-	e := &element{
-		s:    s,
-		next: next,
-		prev: prev,
-	}
-	if prev != nil {
-		prev.next = e
-	}
-	if next != nil {
-		next.prev = e
-	}
-	t.size += 1
-	return e
-}
-
-func (t *teque) get(i int) *element {
-	fi := 0
-	mi := t.size / 2
-	bi := t.size - 1
-
-	if i <= mi {
-		hi := (mi - fi) / 2
-		if i <= hi {
-			return t.find(i, t.front, fi, true)
-		} else {
-			return t.find(i, t.middle, mi, false)
-		}
-	} else {
-		hi := mi + ((bi - mi) / 2)
-		if i <= hi {
-			return t.find(i, t.middle, mi, true)
-		} else {
-			return t.find(i, t.back, bi, false)
-		}
+func newTeque(n int) *teque {
+	return &teque{
+		a:     make([]int, 2*n),
+		first: 2 * n / 2,
+		last:  2 * n / 2,
 	}
 }
 
-func (t *teque) find(
-	i int,
-	from *element,
-	fromi int,
-	forward bool,
-) *element {
-	e := from
-	for e != nil {
-		if fromi == i {
-			return e
-		}
-		if forward {
-			e = e.next
-			fromi++
-		} else {
-			e = e.prev
-			fromi--
-		}
-	}
-	return nil
+func (t *teque) pushFront(x int) {
+	t.first--
+	t.a[t.first] = x
+//	log.Println("front", t.first, t.last)
+//	log.Println(t.a)
 }
 
-func (t *teque) dump() {
-	e := t.front
-	for e != nil {
-		fmt.Print(e.s, ",")
-		e = e.next
-	}
-	fmt.Println()
-	fmt.Println(
-		"F", t.front.s,
-		"M", t.middle.s,
-		"B", t.back.s,
-	)
+func (t *teque) pushBack(x int) {
+	t.last++
+	t.a[t.last-1] = x
+//	log.Println("back", t.first, t.last)
+//	log.Println(t.a)
 }
 
-type element struct {
-	s    string
-	next *element
-	prev *element
+func (t *teque) pushMiddle(x int) {
+	k := t.last - t.first
+	i := t.first + ((k + 1) / 2)
+	copy(t.a[i+1:], t.a[i:])
+	t.a[i] = x
+	t.last++
+//	log.Println("middle", t.first, t.last)
+//	log.Println(t.a)
+}
+
+func (t *teque) get(i int) int {
+	return t.a[t.first+i]
 }
