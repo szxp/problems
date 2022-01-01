@@ -47,7 +47,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 )
 
 func main() {
@@ -65,41 +64,31 @@ func solve() error {
 	buf := make([]byte, maxCapacity)
 	scanner.Buffer(buf, maxCapacity)
 
-	// skip the first number
 	scanner.Scan()
-	s := scanner.Text()
-	n, err := strconv.Atoi(s)
-	if err != nil {
-		return err
-	}
+	b := scanner.Bytes()
+	n, _ := nextInt(b, 0)
 
 	q := newTeque(n)
-	var op string
 	var x, ind int
-	var b []byte
 	for scanner.Scan() {
 		b = scanner.Bytes()
 		ind = bytes.IndexByte(b, ' ')
-		op = string(b[:ind])
-		x, err = strconv.Atoi(string(b[ind+1:]))
-		if err != nil {
-			return err
-		}
+		x, _ = nextInt(b, ind+1)
 
-		switch op {
-		case "push_front":
-			q.pushFront(x)
-		case "push_back":
-			q.pushBack(x)
-		case "push_middle":
-			q.pushMiddle(x)
-		case "get":
+		switch {
+		case b[0] == 'g': // get
 			fmt.Fprint(w, q.get(x))
 			w.WriteByte('\n')
+		case b[5] == 'f': // push_front
+			q.pushFront(x)
+		case b[5] == 'b': // push_back
+			q.pushBack(x)
+		case b[5] == 'm': // push_middle
+			q.pushMiddle(x)
 		}
 	}
 
-	if err = scanner.Err(); err != nil {
+	if err := scanner.Err(); err != nil {
 		return err
 	}
 
@@ -107,43 +96,73 @@ func solve() error {
 }
 
 type teque struct {
-	a     []int
-	first int
-	last  int
+	a1  []int
+	fp1 int
+	lp1 int
+	a2  []int
+	fp2 int
+	lp2 int
 }
 
 func newTeque(n int) *teque {
 	return &teque{
-		a:     make([]int, 2*n),
-		first: 2 * n / 2,
-		last:  2 * n / 2,
+		a1:  make([]int, 2*n),
+		fp1: 2 * n / 2,
+		lp1: 2 * n / 2,
+		a2:  make([]int, 2*n),
+		fp2: 2 * n / 2,
+		lp2: 2 * n / 2,
 	}
 }
 
 func (t *teque) pushFront(x int) {
-	t.first--
-	t.a[t.first] = x
-//	log.Println("front", t.first, t.last)
-//	log.Println(t.a)
+	t.fp1--
+	t.a1[t.fp1] = x
+	if (t.lp1-t.fp1)-(t.lp2-t.fp2) == 2 {
+		t.fp2--
+		t.a2[t.fp2] = t.a1[t.lp1-1]
+		t.lp1--
+	}
 }
 
 func (t *teque) pushBack(x int) {
-	t.last++
-	t.a[t.last-1] = x
-//	log.Println("back", t.first, t.last)
-//	log.Println(t.a)
+	t.lp2++
+	t.a2[t.lp2-1] = x
+	if (t.lp1 - t.fp1) < (t.lp2 - t.fp2) {
+		t.lp1++
+		t.a1[t.lp1-1] = t.a2[t.fp2]
+		t.fp2++
+	}
 }
 
 func (t *teque) pushMiddle(x int) {
-	k := t.last - t.first
-	i := t.first + ((k + 1) / 2)
-	copy(t.a[i+1:], t.a[i:])
-	t.a[i] = x
-	t.last++
-//	log.Println("middle", t.first, t.last)
-//	log.Println(t.a)
+	if t.lp1-t.fp1 == t.lp2-t.fp2 {
+		t.lp1++
+		t.a1[t.lp1-1] = x
+	} else {
+		t.fp2--
+		t.a2[t.fp2] = x
+	}
 }
 
 func (t *teque) get(i int) int {
-	return t.a[t.first+i]
+	if i < t.lp1-t.fp1 {
+		return t.a1[t.fp1+i]
+	}
+	return t.a2[t.fp2+(i-(t.lp1-t.fp1))]
+}
+
+func nextInt(b []byte, i int) (val, ni int) {
+	for ; i < len(b) && !('0' <= b[i] && b[i] <= '9' || b[i] == '-'); i++ {
+	}
+	x := 0
+	sign := 1
+	for ; i < len(b) && ('0' <= b[i] && b[i] <= '9' || b[i] == '-'); i++ {
+		if b[i] == '-' {
+			sign = -1
+		} else {
+			x = x*10 + int(b[i]) - '0'
+		}
+	}
+	return x * sign, i
 }
