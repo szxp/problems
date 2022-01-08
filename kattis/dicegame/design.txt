@@ -1,0 +1,24 @@
+What is the probability of a number rolled with one die?
+
+The probability of a number equals 1 divided by the number of sides of the die.
+
+In formal definition:
+P(n) = 100 / (b1-a1+1)
+
+What is the probability of a pair of numbers rolled with two dice?
+
+It is the product of the probabilities of the numbers.
+
+Formally:
+P(n, m) = P(n) * P(m)
+
+What is the probability of a sum?
+
+It is the sum of the probabilities of those pairs of numbers that result that sum.
+
+We need to calculate the difference between Gunnar's possibility of rolling a higher sum from a given sum and Emmas's possibility of getting a higher sum.
+We are going to sum these difference adventages for each player. If Gunnar has higher probability of winning then it is Gunnar's adventage otherwise it is Emmas's.
+We will do this for all possible sums.
+
+The winner is who has higher probability difference adventage.
+
