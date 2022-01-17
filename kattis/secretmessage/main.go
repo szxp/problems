@@ -54,7 +54,7 @@
 // The bottom left corner is k(k-1).
 // From bottom to up
 // read the characters at indexes
-// k(k-1), k(k-1)-k, k(k-1)-2k, k(k-1)-3k.
+// k(k-1), k(k-1)-k, k(k-1)-2k, k(k-1)-3k, ... k(k-1)-(k-1)k.
 // Then add one to them
 // and read the characters again.
 // Do this for a total of k times.
