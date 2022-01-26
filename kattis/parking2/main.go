@@ -28,7 +28,7 @@
 // But within that parking range
 // it does not matter where Micheal will park,
 // because wherever he parks
-// he have to go past the stores twice.
+// he has to go past every store twice.
 // So the minimum distance he needs to walk
 // is the double of the distance
 // between the minimum and the maximum store number.
