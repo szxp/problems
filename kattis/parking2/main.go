@@ -62,19 +62,7 @@ func solve() error {
 	for scanner.Scan() {
 		scanner.Scan()
 		b = scanner.Bytes()
-
-		var x, max int
-		min := 99
-		for i := 0; i < len(b); {
-			x, i = nextInt(b, i)
-			if x < min {
-				min = x
-			}
-			if max < x {
-				max = x
-			}
-		}
-		fmt.Fprintln(w, (max-min)*2)
+		fmt.Fprintln(w, minDistance(b))
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -82,6 +70,21 @@ func solve() error {
 	}
 
 	return nil
+}
+
+func minDistance(b []byte) int {
+	var x, max int
+	min := 99
+	for i := 0; i < len(b); {
+		x, i = nextInt(b, i)
+		if x < min {
+			min = x
+		}
+		if max < x {
+			max = x
+		}
+	}
+	return (max - min) * 2
 }
 
 func nextInt(b []byte, i int) (val, ni int) {
