@@ -1,3 +1,3 @@
-module szxp/goplay
+module szxp/problems
 
 go 1.17
