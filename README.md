@@ -1,2 +1,2 @@
-# goplay
-Playground for solving algorithmic problems in Go (Kattis, etc)
+# Problems
+Playground for solving algorithmic problems (Kattis, etc)
