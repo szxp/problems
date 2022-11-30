@@ -5,8 +5,7 @@ main = do
     let w = words z
     let n = read $ head w :: Int
     let m = read $ last w :: Int
-    putStrLn $ show (cmp n m)
-    where
+    putStrLn $ show $ cmp n m
 
 cmp :: Int -> Int -> Int
 cmp n m
