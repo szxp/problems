@@ -5,6 +5,5 @@ main = do
     let n = read z :: Int
     putStrLn $ win n
     
-win n | n `mod` 2 == 1 = "first"
-      | otherwise      = "second"
-
+win n | odd n = "first"
+      | otherwise = "second"
